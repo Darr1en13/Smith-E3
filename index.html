@@ -68,16 +68,18 @@
             // view...
             function updateView()
             {
-                $('#yeet').empty(); 
 
-                if(model.blank==true);//HEY MARK, <-- i know this is how you do this, but for what ever reason this if statement always gets treated as if it were true...even the debugger says its false
+               
+               //HEY MARK, <-- i know this is how you do this, but for what ever reason this if statement always gets treated as if it were true...even the debugger says its false
+                $('#yeet').empty();
+                if(model.blank==true)
                 {
-                    $('#yeet').empty(); 
                     let blank = $("<p></p>");
                     blank.addClass("blank");
-                    blank.text("Please enter Description and Square feet");
+                    blank.text("Please enter a description and number of square feet.");
                     $('#yeet').append(blank);
                 }
+               
                 
                 $('#jobList').empty();                
                 for (var i in model.jobs) 
