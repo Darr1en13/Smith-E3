@@ -9,6 +9,11 @@
                 font-weight: bold;
                 color: blue;
             }
+            .blank
+            {
+                color:red;
+                text-align:center;
+            }
         </style>
     </head>
     
@@ -28,15 +33,17 @@
                 </div>
                 <button id='btnSubmit' type="button" class="btn btn-primary float-right">Add Job</button>
                 <div class="clearfix"></div>
+
             </form>  
-            
+            <p class="blank" id="yeet"></p>
+
             <!--list group-->
             <div class='p-2 bg-dark'>
                 <h5 class='text-light'>Jobs</h5>
                 <ul id='jobList' class="list-group">
                 </ul>            
             </div>
-
+            <p>NOTE: The cost assumes a can of paint costs $10 and can cover 100 Square Feet</p>
         </div>
         
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -55,21 +62,33 @@
             function initializeModel()
             {
                 model.jobs = [];
+                model.blank = false;
             }
             
             // view...
             function updateView()
             {
+                $('#yeet').empty(); 
+
+                if(model.blank==true);//HEY MARK, <-- i know this is how you do this, but for what ever reason this if statement always gets treated as if it were true...even the debugger says its false
+                {
+                    $('#yeet').empty(); 
+                    let blank = $("<p></p>");
+                    blank.addClass("blank");
+                    blank.text("Please enter Description and Square feet");
+                    $('#yeet').append(blank);
+                }
+                
                 $('#jobList').empty();                
                 for (var i in model.jobs) 
                 {
                     let item = $("<li></li>");
                     item.addClass("list-group-item");
                     item.addClass("jobs");
-                    item.html("<span class='bold'>Description:</span> " + model.jobs[i].desc + " <span class='bold'>Square Feet:</span> " + model.jobs[i].sqFt);
+                    item.html("<span class='bold'>Description:</span> " + model.jobs[i].desc + " <span class='bold'>Square Feet:</span> " + model.jobs[i].sqFt + " <span class='bold'>Cost:</span> " + model.jobs[i].cst);
                     $('#jobList').append(item);
-
                 }
+               
             }            
             
             // controller ...
@@ -77,8 +96,28 @@
             {
                 let desc = $('#jobDesc').val().trim();
                 let sqFeet =$('#sqFt').val().trim();
-                model.jobs.push({ desc: desc, sqFt: sqFeet});
+                   var cost = sqFeet;
+                if(cost%10!=0)
+                {
+                    cost = (cost/100)*10;
+                    cost = cost + 10 - (cost % 10);
+                }
+                else if(cost%10==0)
+                {
+                   cost = Math.ceil(cost / 100.0) * 100;
+                   cost = cost/10;
+                }
+                model.blank = false;  
+                if(desc==""||sqFeet=="")
+                {
+                model.blank = true;  
+                }
+                
+                if(model.blank==false)
+                {
+                model.jobs.push({ desc: desc, sqFt: sqFeet,cst:cost});
                 console.log(model.jobs);
+                }
                 updateView();
             });
             
